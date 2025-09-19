@@ -244,9 +244,26 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     flex-wrap: wrap;
     gap: 1rem;
+}
+
+.job-location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-light);
+    font-size: 0.875rem;
+    font-weight: 400;
+}
+
+.job-location i {
+    color: var(--primary-color);
+    font-size: 0.75rem;
+    width: 12px;
+    text-align: center;
 }
 
 .company-info h3 {
