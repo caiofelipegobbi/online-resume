@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeScrollEffects();
     initializePrintFunctionality();
     initializeThemeToggle();
+    initializeCertificationDownloads();
 });
 
 // Typewriter effect for the name
@@ -302,6 +303,111 @@ document.addEventListener('click', function(e) {
         }
     }
 });
+
+// Certification download functionality
+function initializeCertificationDownloads() {
+    const certificationLinks = document.querySelectorAll('.certification-link');
+    
+    certificationLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Get the certificate name from the download attribute
+            const downloadName = this.getAttribute('download');
+            const certName = downloadName.replace('.pdf', '').replace('_', ' ');
+            
+            // Show download feedback
+            showDownloadToast(`Downloading ${certName}...`);
+            
+            // Add click animation
+            const certItem = this.querySelector('.certification-item');
+            certItem.style.transform = 'translateY(-2px) scale(0.98)';
+            
+            setTimeout(() => {
+                certItem.style.transform = '';
+            }, 200);
+        });
+    });
+}
+
+// Show download toast notification
+function showDownloadToast(message) {
+    // Remove any existing toast
+    const existingToast = document.querySelector('.download-toast');
+    if (existingToast) {
+        existingToast.remove();
+    }
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = 'download-toast';
+    toast.innerHTML = `
+        <i class="fas fa-download"></i>
+        <span>${message}</span>
+    `;
+    
+    // Add toast styles
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        animation: slideInUp 0.3s ease-out;
+        max-width: 300px;
+    `;
+    
+    // Add animation styles if not already added
+    if (!document.querySelector('#toast-animations')) {
+        const animationStyles = document.createElement('style');
+        animationStyles.id = 'toast-animations';
+        animationStyles.textContent = `
+            @keyframes slideInUp {
+                from {
+                    transform: translateY(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes slideOutDown {
+                from {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateY(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(animationStyles);
+    }
+    
+    document.body.appendChild(toast);
+    
+    // Auto-remove toast after 3 seconds
+    setTimeout(() => {
+        if (toast && toast.parentNode) {
+            toast.style.animation = 'slideOutDown 0.3s ease-in';
+            setTimeout(() => {
+                if (toast && toast.parentNode) {
+                    toast.remove();
+                }
+            }, 300);
+        }
+    }, 3000);
+}
 
 // Enhanced keyboard navigation
 document.addEventListener('keydown', function(e) {
