@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeTypewriter();
     initializeContactAnimations();
     initializeScrollEffects();
-    initializePrintFunctionality();
     initializeThemeToggle();
     initializeCertificationDownloads();
+    initializeSkillBars();
 });
 
 // Typewriter effect for the name
@@ -230,55 +230,41 @@ function initializeScrollEffects() {
     });
 }
 
-// Print functionality
-function initializePrintFunctionality() {
-    // Add print button
-    const printBtn = document.createElement('button');
-    printBtn.className = 'print-btn';
-    printBtn.innerHTML = '<i class="fas fa-print"></i> Print CV';
-    printBtn.style.cssText = `
-        position: fixed;
-        bottom: 30px;
-        left: 30px;
-        padding: 12px 20px;
-        background: linear-gradient(135deg, #059669, #10b981);
-        border: none;
-        border-radius: 25px;
-        color: white;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        opacity: 0.9;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    `;
+// Skills bar animation functionality
+function initializeSkillBars() {
+    const skillCategories = document.querySelectorAll('.skills-category');
     
-    printBtn.addEventListener('mouseenter', function() {
-        this.style.opacity = '1';
-        this.style.transform = 'translateY(-2px)';
-        this.style.boxShadow = '0 6px 16px rgba(5, 150, 105, 0.4)';
+    // Create intersection observer for skill animation
+    const skillObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate');
+                skillObserver.unobserve(entry.target); // Only animate once
+            }
+        });
+    }, {
+        threshold: 0.5,
+        rootMargin: '0px 0px -50px 0px'
     });
     
-    printBtn.addEventListener('mouseleave', function() {
-        this.style.opacity = '0.9';
-        this.style.transform = 'translateY(0)';
-        this.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
+    // Observe all skill categories
+    skillCategories.forEach(category => {
+        skillObserver.observe(category);
     });
     
-    printBtn.addEventListener('click', function() {
-        window.print();
+    // Add hover effects to individual skill items
+    const skillItems = document.querySelectorAll('.skill-item');
+    skillItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            const skillBar = this.querySelector('.skill-bar');
+            skillBar.style.boxShadow = '0 0 10px rgba(37, 99, 235, 0.4)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            const skillBar = this.querySelector('.skill-bar');
+            skillBar.style.boxShadow = 'none';
+        });
     });
-    
-    document.body.appendChild(printBtn);
-    
-    // Hide print button on mobile
-    if (window.innerWidth <= 768) {
-        printBtn.style.display = 'none';
-    }
 }
 
 // Theme toggle functionality (bonus feature)
@@ -330,7 +316,7 @@ function initializeCertificationDownloads() {
 
 // Show download toast notification
 function showDownloadToast(message) {
-    // Remove any existing toast
+
     const existingToast = document.querySelector('.download-toast');
     if (existingToast) {
         existingToast.remove();
@@ -411,16 +397,6 @@ function showDownloadToast(message) {
 
 // Enhanced keyboard navigation
 document.addEventListener('keydown', function(e) {
-    // Press 'P' to print
-    if (e.key === 'p' || e.key === 'P') {
-        if (e.ctrlKey || e.metaKey) {
-            return; // Let browser handle Ctrl+P
-        } else {
-            e.preventDefault();
-            window.print();
-        }
-    }
-    
     // Press 'T' to go to top
     if (e.key === 't' || e.key === 'T') {
         if (!e.ctrlKey && !e.metaKey) {
