@@ -147,7 +147,7 @@ body {
 }
 
 .contact-item i {
-    font-size: 1.25rem;
+    font-size: 1.20rem;
     width: 20px;
     text-align: center;
 }
@@ -160,17 +160,13 @@ body {
     color: #ea4335;
 }
 
-.phone i {
-    color: #34a853;
-}
-
 .github i {
     color: #333;
 }
 
 .contact-item span {
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 1.25rem;
 }
 
 /* Main Content */
