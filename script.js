@@ -41,9 +41,10 @@ function initializeTypewriter() {
     }
 }
 
-// Contact item hover animations
+// Contact item hover animations and email copy functionality
 function initializeContactAnimations() {
     const contactItems = document.querySelectorAll('.contact-item');
+    const emailButton = document.getElementById('email-copy-btn');
     
     contactItems.forEach(item => {
         item.addEventListener('mouseenter', function() {
@@ -62,6 +63,66 @@ function initializeContactAnimations() {
             }, 150);
         });
     });
+    
+    // Email copy functionality
+    if (emailButton) {
+        emailButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            const email = this.getAttribute('data-email');
+            const originalText = this.querySelector('span').textContent;
+            
+            // Copy email to clipboard
+            navigator.clipboard.writeText(email).then(() => {
+                // Visual feedback - change text temporarily
+                const span = this.querySelector('span');
+                span.textContent = 'Copied!';
+                span.style.color = '#10b981'; // Green color
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    span.textContent = originalText;
+                    span.style.color = ''; // Reset to default color
+                }, 2000);
+                
+            }).catch(err => {
+                console.error('Failed to copy email: ', err);
+                // Fallback for older browsers
+                fallbackCopyEmail(email, this);
+            });
+        });
+    }
+}
+
+// Fallback copy function for older browsers
+function fallbackCopyEmail(email, buttonElement) {
+    const textArea = document.createElement('textarea');
+    textArea.value = email;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            // Visual feedback
+            const span = buttonElement.querySelector('span');
+            const originalText = span.textContent;
+            span.textContent = 'Copied!';
+            span.style.color = '#10b981';
+            
+            setTimeout(() => {
+                span.textContent = originalText;
+                span.style.color = '';
+            }, 2000);
+        }
+    } catch (err) {
+        console.error('Fallback: Could not copy email', err);
+    }
+    
+    document.body.removeChild(textArea);
 }
 
 // Scroll effects and progress indicator
